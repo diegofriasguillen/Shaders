@@ -18,7 +18,7 @@ public class Tetraedro4 : MonoBehaviour
                            new Vector3(.5f , .82f, .29f),  //3
                                                     };
 
-    int[] triangles = { 
+    int[] triangles = {
                         0, 1, 2,
                         0, 3, 1,
                         1, 3, 2,

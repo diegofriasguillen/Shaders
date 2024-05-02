@@ -18,7 +18,7 @@ public class Tetraedro3 : MonoBehaviour
                            new Vector3(.5f, .82f, .29f),  //3
                                                     };
 
-    int[] triangles = { 
+    int[] triangles = {
                         0, 1, 2,
                         0, 3, 1,
                         1, 3, 2,
@@ -63,24 +63,10 @@ public class Tetraedro3 : MonoBehaviour
 
     IEnumerator TransformSequence()
     {
-        yield return StartCoroutine(TranslateZX(0.5f, 3.0f));
         yield return StartCoroutine(RotateXY(180.0f, 3.0f));
     }
 
-    IEnumerator TranslateZX(float amount, float duration)
-    {
-        Vector3 targetPosition = initialPosition + new Vector3(amount, 0, amount);
-        float elapsedTime = 0;
 
-        while (elapsedTime < duration)
-        {
-            transform.position = Vector3.Lerp(initialPosition, targetPosition, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = targetPosition;
-    }
 
     IEnumerator RotateXY(float targetAngle, float duration)
     {

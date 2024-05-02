@@ -7,9 +7,9 @@ using UnityEngine;
 public class Tetaedro2 : MonoBehaviour
 {
     Matriz modelMatriz;
-    //rotacion en grados
+
     float angle = 30f;
-    //rotacion en radianes
+
     float rad;
 
     public Material material;
@@ -22,7 +22,7 @@ public class Tetaedro2 : MonoBehaviour
 
                                                     };
 
-    int[] triangles = { 
+    int[] triangles = {
                         0, 1, 2,
                         0, 3, 1,
                         1, 3, 2,
@@ -30,7 +30,7 @@ public class Tetaedro2 : MonoBehaviour
                                 };
 
     Vector3 initialPosition;
-    void Tetra(Vector3[] vertices) 
+    void Tetra(Vector3[] vertices)
     {
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
@@ -68,24 +68,10 @@ public class Tetaedro2 : MonoBehaviour
 
     IEnumerator TransformSequence()
     {
-        yield return StartCoroutine(TranslateZX(-0.5f, 3.0f));
         yield return StartCoroutine(RotateXY(180.0f, 3.0f));
     }
 
-    IEnumerator TranslateZX(float amount, float duration)
-    {
-        Vector3 targetPosition = initialPosition + new Vector3(amount, 0, amount);
-        float elapsedTime = 0;
 
-        while (elapsedTime < duration)
-        {
-            transform.position = Vector3.Lerp(initialPosition, targetPosition, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = targetPosition;
-    }
 
     IEnumerator RotateXY(float targetAngle, float duration)
     {

@@ -12,7 +12,7 @@ public class Octaedro : MonoBehaviour
 
     public Material material;
     Vector3[] vertices = {
-         
+
 
                            new Vector3(1, 0, 0), //0
                            new Vector3(0.5f, 0, .87f), //1
@@ -24,8 +24,8 @@ public class Octaedro : MonoBehaviour
                            new Vector3(1.5f, 0, .87f)  //5
                                                     };
 
-    int[] triangles = { 
-        
+    int[] triangles = {
+
                         0,2,4,
                         0,1,2,
                         1,3,2,
@@ -79,7 +79,7 @@ public class Octaedro : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         yield return StartCoroutine(TranslateZX(0, 3.0f));
-        yield return StartCoroutine(Rotate360());
+
 
     }
 
@@ -98,21 +98,6 @@ public class Octaedro : MonoBehaviour
         transform.position = targetPosition;
     }
 
-    IEnumerator Rotate360()
-    {
-        Quaternion startRotation = transform.rotation;
-        Quaternion endRotation = Quaternion.Euler(180, 180, 0);
-        float duration = 5.0f; 
-        float elapsedTime = 0.0f;
 
-        while (elapsedTime < duration)
-        {
-            transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.rotation = endRotation;
-    }
 
 }

@@ -1,38 +1,149 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 public class Tetaedro1 : MonoBehaviour
 {
+
     Matriz modelMatriz;
 
-    float angle = 30f;
-
-    float rad;
-
     public Material material;
+
     Vector3[] vertices = {
-                           new Vector3(0, 0, 0), //0
-                           new Vector3(1, 0, 0), //1
-                           new Vector3(.5f, 0, .87f), //2
-                           new Vector3(.5f, .82f, .29f),  //3
-                           
-                                                    };
+        new Vector3(0, Mathf.Sqrt(6) / 3, Mathf.Sqrt(3) / 3),  // 0
+        new Vector3(0, 0, 0),                                   // 1a
+        new Vector3(0.5f, 0, Mathf.Sqrt(3) / 2),                // 2b
+        new Vector3(0, Mathf.Sqrt(6) / 3, Mathf.Sqrt(3) / 3),  // 3
+        new Vector3(-0.5f, 0, Mathf.Sqrt(3) / 2),               // 4c
+        new Vector3(0, Mathf.Sqrt(6) / 3, Mathf.Sqrt(3) / 3)   // 5
+    };
 
     int[] triangles = {
+        4, 2, 5,  //inside
+        1, 4, 3,
+        1, 0, 2,
+        1, 2, 4
+    };
 
-                        0, 1, 2,
-                        0, 3, 1,
-                        1, 3, 2,
-                        2, 3, 0,
+    Vector2[] uvs = {
+        new Vector2(0, 0),
+        new Vector2(0.25f, 0.5f),
+        new Vector2(0.5f, 0),
+        new Vector2(0.5f, 1),
+        new Vector2(0.75f, 0.5f),
+        new Vector2(1, 0)
+    };
 
-                                };
+    Vector3 pivot; 
 
-    Vector3 initialPosition;
+    public float translationDistance; 
+    public float rotationXAngle; 
+    public float rotationYAngle; 
+    public float rotationZAngle; 
 
-    void Tetra(Vector3[] vertices)
+    void Start()
+    {
+        Prisma(vertices);
+
+        CalculatePivot();
+
+        modelMatriz = GetComponent<Matriz>();
+
+        StartCoroutine(AnimationCoroutine());
+    }
+
+    IEnumerator AnimationCoroutine()
+    {
+        //traslation
+        yield return Move(translationDistance, 2f);
+        yield return new WaitForSeconds(2f);
+
+        //X
+        yield return RotateX(rotationXAngle, .05f);
+        yield return new WaitForSeconds(2f);
+
+        //Y
+        yield return RotateY(rotationYAngle, .05f);
+        yield return new WaitForSeconds(2f);
+
+        // Z
+        yield return RotateZ(rotationZAngle, .05f);
+    }
+
+    void CalculatePivot()
+    {
+        pivot = Vector3.zero;
+        foreach (Vector3 vertex in vertices)
+        {
+            pivot += vertex;
+        }
+        pivot /= vertices.Length;
+    }
+
+    IEnumerator Move(float distance, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = modelMatriz.Traslation(vertices[i], new Vector4(distance * t, 0, 0, 0));
+            }
+            UpdateMesh();
+            yield return null;
+        }
+    }
+
+    IEnumerator RotateX(float angle, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = modelMatriz.RotX(vertices[i], angle * t);
+            }
+            UpdateMesh();
+            yield return null;
+        }
+    }
+
+    IEnumerator RotateY(float angle, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = modelMatriz.RotY(vertices[i], angle * t);
+            }
+            UpdateMesh();
+            yield return null;
+        }
+    }
+
+    IEnumerator RotateZ(float angle, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = modelMatriz.RotZ(vertices[i], angle * t);
+            }
+            UpdateMesh();
+            yield return null;
+        }
+    }
+
+    void Prisma(Vector3[] vertices)
     {
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
@@ -40,55 +151,17 @@ public class Tetaedro1 : MonoBehaviour
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.uv = uvs;
         mesh.Optimize();
         mesh.RecalculateNormals();
     }
 
-    private void Start()
+    void UpdateMesh()
     {
-        modelMatriz = new Matriz();
-
-        initialPosition = transform.position;
-
-        rad = angle * Mathf.Deg2Rad;
-
-        Vector3 center = Vector3.zero;
-        foreach (Vector3 vertex in vertices)
-        {
-            center += vertex;
-        }
-        center /= vertices.Length;
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            vertices[i] -= center;
-        }
-
-        Tetra(vertices);
-
-        StartCoroutine(TransformSequence());
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        mesh.vertices = vertices;
+        mesh.RecalculateNormals();
+        Prisma(vertices);
     }
-
-    IEnumerator TransformSequence()
-    {
-        yield return StartCoroutine(RotateXY(180.0f, 3.0f));
-    }
-
-
-    IEnumerator RotateXY(float targetAngle, float duration)
-    {
-        Quaternion initialRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.Euler(targetAngle, targetAngle, 0);
-        float elapsedTime = 0;
-
-        while (elapsedTime < duration)
-        {
-            transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.rotation = targetRotation;
-    }
-
 
 }

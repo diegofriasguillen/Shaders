@@ -8,13 +8,13 @@ using UnityEngine;
 public class Icosaedro : MonoBehaviour
 {
     //[SerializeField]
-    private Vector3 rotationSpeed = new Vector3(0, 45, 0); 
+    private Vector3 rotationSpeed = new Vector3(0, -90, 0); 
 
     //[SerializeField]
-    private Vector3 rotationSpeed1 = new Vector3(0, 45, 0); 
+    private Vector3 rotationSpeed1 = new Vector3(0, -90, 0); 
 
     //[SerializeField]
-    private Vector3 rotationSpeed2 = new Vector3(0, 45, 0); 
+    private Vector3 rotationSpeed2 = new Vector3(0, -90, 0); 
 
     public float speedX;
     private float speedy;

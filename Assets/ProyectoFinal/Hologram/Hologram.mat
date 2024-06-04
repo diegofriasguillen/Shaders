@@ -46,9 +46,9 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _testColorLerp: 0
-    - _testLerpValue: 0
+    - _testLerpValue: 1
     m_Colors:
-    - Color2: {r: 0, g: 1.1660442, b: 1.4609501, a: 0}
+    - Color2: {r: 0, g: 1.1660442, b: 1.4227054, a: 0}
     - _ColorOne: {r: 0, g: 0, b: 0, a: 0}
     - _ColorRange: {r: -3, g: 4, b: 0, a: 0}
     - _StripesOneSpeed: {r: 0, g: 0.2, b: 0, a: 0}
